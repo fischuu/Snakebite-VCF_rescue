@@ -1,0 +1,48 @@
+# Set the project relevant paths
+################################################################################
+pipelineFolder="/users/fischerd/git/Snakebite-VCF_rescue"
+projectFolder="/scratch/project_2001746/Rescue_dev"
+
+# Setup the server profile. You can copy the default profile and adjust it to your hpc.
+# Check that the generic command meets the requirements from your (slurm) executor.
+# It is recommended to copy the Profile folder to a new folder with the name of
+# your cluster
+################################################################################
+Profile=$projectFolder/config/profiles/Puhti
+
+# Make Snakemake available. Here is an example, how it would be loaded with the
+# module system, but other systems might have it available per standard installation.
+# In that case you can comment out the follwing line
+################################################################################
+module load snakemake/8.4.6
+
+# For use with Apptainer, set these variables
+################################################################################
+export APPTAINER_TMPDIR="/scratch/project_2001746/tmp"
+export APPTAINER_CACHEDIR="/scratch/project_2001746/tmp"
+mkdir -p $APPTAINER_TMPDIR
+mkdir -p $APPTAINER_CACHEDIR
+
+# Create the rulegraph
+################################################################################
+#snakemake -s $pipelineFolder/workflow/Snakefile \
+#          --configfile $projectFolder/config/config.yaml \
+#          --rulegraph | dot -T png > $projectFolder/workflow.png
+
+
+# Run the pipeline (singularity/apptainer)
+# Important adjustments: 
+# --jobs, how many parallel jobs do you allow on your system for this project
+# --singularity-args, are the important folders and paths bound to the containers? If you are unsure, go with the defaults and check for errors
+################################################################################
+mkdir -p slurm_out
+
+snakemake -s $pipelineFolder/workflow/Snakefile \
+          --jobs 150 \
+          --use-singularity \
+          --configfile $projectFolder/config/config.yaml \
+          --profile $Profile \
+          --singularity-args "-B /scratch,/projappl,/users,/dev/shm:/dev/shm,/run,/tmp" \
+          --latency-wait 60 \
+          --scheduler greedy \
+          $@

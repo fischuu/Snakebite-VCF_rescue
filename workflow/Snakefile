@@ -1,4 +1,48 @@
-# Main entrypoint of the workflow. 
-# Please follow the best practices: 
-# https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html,
-# in particular regarding the standardized folder structure mentioned there. 
+##### Snakebite - VCF rescue pipeline #####
+##### Daniel Fischer (daniel.fischer@luke.fi)
+##### Natural Resources Institute Finland (Luke)
+version = "0.1"
+
+import pandas as pd
+from snakemake.utils import validate, min_version
+import re
+import os
+import sys
+import yaml
+
+##### set minimum snakemake version and basic configurations #####
+min_version("8.0")
+workdir: config["project_folder"]
+
+##### load config and sample sheets #####
+samplesheet = pd.read_table(config["samplesheet_file"], comment="#").set_index("rawsample", drop=False)
+rawsamples=list(samplesheet.rawsample)
+samples=list(set(list(samplesheet.sample_name)))
+lane=list(samplesheet.lane)
+docker = yaml.load(open(config["docker_file"], "r"), Loader=yaml.SafeLoader)
+resources = yaml.load(open(config["resources_file"], "r"), Loader=yaml.SafeLoader)
+#samples = pd.read_table(config["sample_file"], comment="#", dtype="str")
+
+wildcard_constraints:
+    rawsamples="|".join(rawsamples),
+    samples="|".join(samples),
+
+##### Complete some configuration settings #####
+config["genome-bwa-index"] = config["reference_genome"]+".bwt"
+
+# Import subworkflows
+include: "rules/folders.smk"
+include: "rules/qc/main.smk"
+include: "rules/preprocess/__main__.smk"
+include: "rules/reference/__main__.smk"
+include: "rules/alignment/__main__.smk"
+include: "rules/variantcalling/__main__.smk"
+include: "rules/report/main.smk"
+
+rule all:
+    """Run the entire pipeline"""
+    input:
+        rules.preprocess.input,
+        rules.reference.input,
+        rules.alignment.input,
+        rules.variantcalling.input

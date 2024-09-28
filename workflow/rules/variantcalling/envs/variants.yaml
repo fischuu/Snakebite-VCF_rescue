@@ -1,0 +1,7 @@
+name: snakebite_variants
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bcftools=1.21

@@ -1,0 +1,5 @@
+rawsample	sample_name	lane	read1	read2	forward_adapter	reverse_adapter
+Sample1_S12_L001	Sample1_S12	L001	Sample1_S12_L001_R1_001.fastq.gz	Sample1_S12_L001_R2_001.fastq.gz		
+Sample1_S12_L002	Sample1_S12	L002	Sample1_S12_L002_R1_001.fastq.gz	Sample1_S12_L002_R2_001.fastq.gz		
+Sample2_S8_L002	Sample2_S8	L002	Sample2_S8_L002_R1_001.fastq.gz	Sample2_S8_L002_R2_001.fastq.gz		
+Sample2_S8_L001	Sample2_S8	L001	Sample2_S8_L001_R1_001.fastq.gz	Sample2_S8_L001_R2_001.fastq.gz		

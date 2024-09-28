@@ -1,0 +1,3 @@
+alignment: "docker://fischuu/snakebite_alignment:0.1"
+preprocess: "docker://fischuu/snakebite_preprocess:0.1"
+variants: "docker://fischuu/snakebite_variants:0.1"

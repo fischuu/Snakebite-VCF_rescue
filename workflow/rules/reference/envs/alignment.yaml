@@ -1,0 +1,8 @@
+name: snakebite_alignment
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bwa=0.7.18
+  - samtools=1.21

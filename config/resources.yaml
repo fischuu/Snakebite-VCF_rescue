@@ -1,0 +1,20 @@
+#################################
+##
+## Server configuration
+
+# Time allocations in minutes, for rules that run only short, long or very long 
+time:
+    shortrun: 300 
+    longrun: 1800
+# Memory allocations in MB for different profiles
+mem_per_cpu:
+    lowmem: 16000
+    highmem: 160000
+# CPU settings for single thread and multi thread jobs
+cpu_per_task:
+    single_thread: 1
+    multi_thread: 24
+# Partition names for slurm executor
+partition:
+    testing: "test"
+    standard: "small"

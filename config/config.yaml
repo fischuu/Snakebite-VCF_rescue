@@ -1,0 +1,30 @@
+# Config file for Snakebite - VCF_rescue Pipeline
+
+project_folder: "/scratch/project_2001746/Rescue_dev"
+pipeline_folder: "/users/fischerd/git/Snakebite-VCF_rescue"
+reference_genome: "REFERENCE/reference.fa"           
+high_quality_vcf: "VCF/high_quality_snps.vcf"
+rawdata_folder: "READS"
+
+# Quality control parameters for mpileup (example: a minimum depth or other filters)
+preprocess:
+  fastp:
+    length_required: 25  # nonpareil requires at least 25bp
+    extra: "--trim_poly_g --trim_poly_x"
+
+mpileup:
+  min_quality: 20          # Minimum base quality to include
+  min_depth: 1             # Minimum read depth to call a genotype
+  max_depth: 1000          # Maximum read depth (optional)
+  additional_args: ""      # Extra arguments for bcftools mpileup if needed
+
+# Variant calling
+rescue_calling:
+  min_ref_reads: 1         # Minimum reads supporting the REF allele to call
+  min_alt_reads: 1         # Minimum reads supporting the ALT allele to call
+  hetero_threshold: 0.5    # Proportion for heterozygous call (e.g., 0.5 means equal REF and ALT)
+
+# Parts of the configuration that most likely does not need to be touched
+samplesheet_file: "config/samples.tsv"
+docker_file: "config/.docker.yaml"
+resources_file: "config/resources.yaml"
