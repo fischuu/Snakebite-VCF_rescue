@@ -45,10 +45,10 @@ rule _preprocess__fastp__run:
         fastp \
             --in1 {input.forward_} \
             --in2 {input.reverse_} \
-            --out1 {params.temp_forward_} \
-            --out2 {params.temp_reverse_} \
-            --unpaired1 {params.temp_unpaired1} \
-            --unpaired2 {params.temp_unpaired2} \
+            --out1 {output.forward_} \
+            --out2 {output.reverse_} \
+            --unpaired1 {output.unpaired1} \
+            --unpaired2 {output.unpaired2} \
             --html {output.html} \
             --json {output.json} \
             --verbose \
@@ -57,25 +57,4 @@ rule _preprocess__fastp__run:
             --thread {threads} \
             {params.extra} \
         2> {log} 1>&2
-
-        # Compress the outputs using bgzip
-        bgzip -l 9 -@ {threads} {params.temp_forward_}
-        bgzip -l 9 -@ {threads} {params.temp_reverse_}
-        bgzip -l 9 -@ {threads} {params.temp_unpaired1}
-        bgzip -l 9 -@ {threads} {params.temp_unpaired2}
-
-        # Move the compressed files to the final destination
-        mv {params.temp_forward_}.gz {output.forward_}
-        mv {params.temp_reverse_}.gz {output.reverse_}
-        mv {params.temp_unpaired1}.gz {output.unpaired1}
-        mv {params.temp_unpaired2}.gz {output.unpaired2}
-
-
-        # Check the integrity of the gzipped files and log the output
-        echo "Checking integrity of output files" >> {log}
-        gzip -t {output.forward_} 2>> {log}
-        gzip -t {output.reverse_} 2>> {log}
-        gzip -t {output.unpaired1} 2>> {log}
-        gzip -t {output.unpaired2} 2>> {log}
-        echo "Integrity check completed" >> {log}
         """
