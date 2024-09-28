@@ -22,7 +22,7 @@ rule _variantcalling__bcftools_mpileup:
     container:
         docker["variants"]
     shell:"""
-        bcftools mpileup -f {input.reference} {input.bam} -T {input.variants} -Ou -o {output} 2>> {log} 1>&2
+        bcftools mpileup -f {input.reference} {input.bam} -T {input.variants} -Ov -o {output} 2>> {log} 1>&2
   	"""
   	
   	
@@ -46,6 +46,9 @@ rule _variantcalling__bcftools_calling:
     container:
         docker["variants"]
     shell:"""
-        bcftools call -mv -A --ploidy 1 -o {input} {output} 2>> {log} 1>&2
+        bcftools call -mv -A --ploidy 1 -C alleles --output-type v -o {output} {input}  2>> {log} 1>&2
+        
+        #  bcftools filter -i 'DP>=X' -o RESULTS/VARIANT_CALLING/BCFTOOLS/Sample1_S12.filtered.vcf RESULTS/VARIANT_CALLING/BCFTOOLS/Sample1_S12.vcf
+
   	"""
   
